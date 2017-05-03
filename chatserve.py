@@ -32,26 +32,27 @@ if __name__ == "__main__":
     s.bind((HOST, PORT))
     s.listen(1)
 
-    conn, addr = s.accept()        #hangs here 
+    conn, addr = s.accept()       
 
     print 'Connected by', addr
     
-    #first_message = True
+    #get client's handle first 
     client_message = conn.recv(10)
     handle_b =     client_message
+	
+	#send handle to client 
+	sent = self.sock.send(handle_a)
+            if sent == 0:
+                raise RuntimeError("socket connection broken")
 
     while 1:            
         client_message = conn.recv(500)
         print handle_b + '> ' + client_message
         
-        #get client's handle
-        #if first_message == True:
-            #handle_b =     client_message.split('>')[0]
-            #first_message = False 
-
-        #data = conn.recv(1024)
-        #if not data: break
-        #conn.sendall(data)
+        server_message = raw_input()
+		sent = self.sock.send(server_message)
+            if sent == 0:
+                raise RuntimeError("socket connection broken")
 
     conn.close()
     

@@ -32,11 +32,11 @@ void receiveMessage() {
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
 	char handleA[MAX_HANDLE], handleB[MAX_HANDLE]; 
-	char message[MAX_MESSAGE];
+	char message[MAX_MESSAGE], reply[MAX_MESSAGE];
 
 	int socketfd; 
 	
-	int charsWritten;
+	int charsWritten, charsRead;
 
 	//check args
 	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
@@ -100,6 +100,8 @@ int main(int argc, char *argv[]) {
 	charsWritten = send(socketfd, handleB, strlen(handleB), 0);
 	if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
 	
+	//get handle from server 
+	
 	while(1) {
 		//get message from user 
 		memset(message, 0, MAX_MESSAGE);
@@ -110,10 +112,17 @@ int main(int argc, char *argv[]) {
 		message[strcspn(message, "\n")] = 0;
 
 		//test print 
-		printf("%s> %s\n", handleB, message);	
+		//printf("%s> %s\n", handleB, message);	
 		
+		//send message to server
 		charsWritten = send(socketfd, message, strlen(message), 0);
 		if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+		
+		//get reply from server 
+		memset(reply, 0, MAX_MESSAGE);
+		charsRead =  recv(socketfd, reply, sizeof mreply, 0));
+		if (charsRead < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+		
 	}
 
 	
