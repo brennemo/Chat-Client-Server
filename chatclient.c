@@ -28,12 +28,15 @@ void receiveMessage() {
 
 }
 
+//chatclient flip1.engr.oregonstate.edu
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
 	char handle[MAX_HANDLE]; 
 	char message[MAX_MESSAGE];
 
 	int socketfd; 
+	
+	int charsWritten;
 
 	//check args
 	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
@@ -57,7 +60,7 @@ int main(int argc, char *argv[]) {
 
 	//get ready to connect 
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
-		fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
+		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
 
 	//freeaddrinfo(res);						//free linked list
@@ -70,7 +73,7 @@ int main(int argc, char *argv[]) {
 
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
-		fprintf(stderr,"connect!!\n"); 
+		fprintf(stderr,"error: connect\n"); 
 		close(socketfd);
 		exit(1); 
 	}
@@ -88,7 +91,6 @@ int main(int argc, char *argv[]) {
 	//trim newline 
 	handle[strcspn(handle, "\n")] = 0;
 
-
 	/*
 	** run chat 
 	*/
@@ -103,7 +105,11 @@ int main(int argc, char *argv[]) {
 		//trim newline 
 		message[strcspn(message, "\n")] = 0;
 
+		//test print 
 		printf("%s\n", message);	
+		
+		charsWritten = send(socketfd, message, strlen(message), 0);
+		if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
 	}
 
 	
