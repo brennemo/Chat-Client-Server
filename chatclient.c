@@ -24,7 +24,7 @@ int main(int argc, char *argv[]) {
 	int socketfd; 
 
 	//check args
-	if (argc < 3) { fprintf(stderr,"USAGE: client hostname port\n"); exit(1); } 
+	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
 	hostname = argv[1];
 	port = argv[2];
 
