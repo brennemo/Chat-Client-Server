@@ -1,16 +1,16 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 
 # Echo server program
 import socket
 import sys
 
-def start_up:
+def start_up():
 	print "start up!"
 
-def send_message:
+def send_message():
 	print "sent message!"
 
-def receive_message:
+def receive_message():
 	print "receive message!"
 
 if __name__ == "__main__":
@@ -20,6 +20,7 @@ if __name__ == "__main__":
         exit(1)
 
     port_num = int(sys.argv[1])
+    print port_num 
 
     #hard code handle
     handle_a = "blorps"
@@ -31,7 +32,7 @@ if __name__ == "__main__":
     s.bind((HOST, PORT))
     s.listen(1)
 
-    conn, addr = s.accept()
+    conn, addr = s.accept()		#hangs here 
 
     print 'Connected by', addr
 
@@ -41,4 +42,36 @@ if __name__ == "__main__":
     	conn.sendall(data)
 
     conn.close()
-
+	
+    """
+	
+	HOST = None               # Symbolic name meaning all available interfaces
+    PORT = 50007              # Arbitrary non-privileged port
+    s = None
+    for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC, socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
+        af, socktype, proto, canonname, sa = res
+        try:
+            s = socket.socket(af, socktype, proto)
+        except socket.error as msg:
+            s = None
+            continue
+        try:
+            s.bind(sa)
+            s.listen(1)
+        except socket.error as msg:
+            s.close()
+            s = None
+            continue
+        break
+    if s is None:
+        print 'could not open socket'
+        sys.exit(1)
+    conn, addr = s.accept()
+    print 'Connected by', addr
+    while 1:
+        data = conn.recv(1024)
+        if not data: break
+        conn.send(data)
+    conn.close()
+	
+    """
