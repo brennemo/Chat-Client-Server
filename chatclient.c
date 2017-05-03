@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 		fgets(message, MAX_MESSAGE - 1, stdin);		//account for newline in size
 
 		//trim newline 
-		handle[strcspn(message, "\n")] = 0;
+		message[strcspn(message, "\n")] = 0;
 
 		printf("%s\n", message);	
 	}
