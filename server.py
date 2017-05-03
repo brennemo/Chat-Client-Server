@@ -1,33 +1,31 @@
 # Echo server program
 import socket
 import sys
+import SocketServer
 
-HOST = None               # Symbolic name meaning all available interfaces
-PORT = 50007              # Arbitrary non-privileged port
-s = None
-for res in socket.getaddrinfo(HOST, PORT, socket.AF_UNSPEC,
-                              socket.SOCK_STREAM, 0, socket.AI_PASSIVE):
-    af, socktype, proto, canonname, sa = res
-    try:
-        s = socket.socket(af, socktype, proto)
-    except socket.error as msg:
-        s = None
-        continue
-    try:
-        s.bind(sa)
-        s.listen(1)
-    except socket.error as msg:
-        s.close()
-        s = None
-        continue
-    break
-if s is None:
-    print 'could not open socket'
-    sys.exit(1)
-conn, addr = s.accept()
-print 'Connected by', addr
-while 1:
-    data = conn.recv(1024)
-    if not data: break
-    conn.send(data)
-conn.close()
+class MyTCPHandler(SocketServer.BaseRequestHandler):
+    """
+    The RequestHandler class for our server.
+
+    It is instantiated once per connection to the server, and must
+    override the handle() method to implement communication to the
+    client.
+    """
+
+    def handle(self):
+        # self.request is the TCP socket connected to the client
+        self.data = self.request.recv(1024).strip()
+        print "%s wrote:" % self.client_address[0]
+        print self.data
+        # just send back the same data, but upper-cased
+        self.request.send(self.data.upper())
+
+if __name__ == "__main__":
+    HOST, PORT = "localhost", 9996
+
+    # Create the server, binding to localhost on port 9999
+    server = SocketServer.TCPServer((HOST, PORT), MyTCPHandler)
+
+    # Activate the server; this will keep running until you
+    # interrupt the program with Ctrl-C
+    server.serve_forever()
