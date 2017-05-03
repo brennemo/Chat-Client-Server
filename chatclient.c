@@ -31,7 +31,7 @@ void receiveMessage() {
 //chatclient flip1.engr.oregonstate.edu
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
-	char handle[MAX_HANDLE]; 
+	char handleA[MAX_HANDLE], handleB[MAX_HANDLE]; 
 	char message[MAX_MESSAGE];
 
 	int socketfd; 
@@ -82,21 +82,24 @@ int main(int argc, char *argv[]) {
 	/*
 	** get handle from user 
 	*/
+	memset(handleB, 0, MAX_HANDLE);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
-	fgets(handle, MAX_HANDLE, stdin);
+	fgets(handleB, MAX_HANDLE, stdin);
 
 	//ERROR HANDLING HERE 
 
 	//trim newline 
-	handle[strcspn(handle, "\n")] = 0;
+	handleB[strcspn(handleB, "\n")] = 0;
 
 	/*
 	** run chat 
 	*/
+	
+	//send handle to server 
+	if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+	
 	while(1) {
-		printf("%s> ", handle);	
-
 		//get message from user 
 		memset(message, 0, MAX_MESSAGE);
 		fflush(stdout);	fflush(stdin);
@@ -106,7 +109,7 @@ int main(int argc, char *argv[]) {
 		message[strcspn(message, "\n")] = 0;
 
 		//test print 
-		printf("%s\n", message);	
+		printf("%s> %s\n", handleB, message);	
 		
 		charsWritten = send(socketfd, message, strlen(message), 0);
 		if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
