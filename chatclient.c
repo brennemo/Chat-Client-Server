@@ -16,6 +16,18 @@
 #define MAX_MESSAGE 500
 #define MAX_HANDLE 10 
 
+void initiateContact() {
+
+}
+
+void sendMessage() {
+
+}
+
+void receiveMessage() {
+
+}
+
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
 	char handle[MAX_HANDLE]; 
