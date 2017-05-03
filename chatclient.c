@@ -45,7 +45,7 @@ int main(int argc, char *argv[]) {
 	/*
 	** fill out hints struct 
 	*/
-	struct addrinfo hints, *res, *p;
+	struct addrinfo hints, *res;
 	int status; 
 	char ipstr[INET6_ADDRSTRLEN];
 
@@ -60,39 +60,17 @@ int main(int argc, char *argv[]) {
 		fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
 
-	/*
-	** get appropriate IPv4 or IPv6 addr 
-	*/
-	/*
-	for (p = res; p != NULL; p = p->ai_next) {
-		void *addr;
-		//char *ipver; 
-
-		if (p->ai_family == AF_INET) {
-			struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
-			addr = &(ipv4->sin_addr);
-			//ipver = "IPv4";
-		} else {
-			struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr; 
-			addr = &(ipv6->sin6_addr);
-			//ipver = "IPv6";
-		}
-	}
-	*/
-
-	freeaddrinfo(res);						//free linked list
+	//freeaddrinfo(res);						//free linked list
 
 	/*
 	** make socket and connect 
 	*/
-	//socketfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
 
-	//status = connect(socketfd, p->ai_addr, p->ai_addrlen);
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
-		fprintf(stderr,"connect\n"); 
+		fprintf(stderr,"connect!!\n"); 
 		close(socketfd);
 		exit(1); 
 	}
