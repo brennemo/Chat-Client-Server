@@ -50,18 +50,20 @@ int main(int argc, char *argv[]) {
 	char ipstr[INET6_ADDRSTRLEN];
 
 	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_UNSPEC; 			//IPv4 or IPv6
+	//hints.ai_family = AF_UNSPEC; 			//IPv4 or IPv6
+	hints.ai_family = AF_INET; 	
 	hints.ai_socktype = SOCK_STREAM;		//TCP
 	hints.ai_flags = AI_PASSIVE; 
 
 	//get ready to connect 
-	if ((status = getaddrinfo(NULL, port, &hints, &res)) != 0) {
+	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
 
 	/*
 	** get appropriate IPv4 or IPv6 addr 
 	*/
+	/*
 	for (p = res; p != NULL; p = p->ai_next) {
 		void *addr;
 		//char *ipver; 
@@ -76,16 +78,19 @@ int main(int argc, char *argv[]) {
 			//ipver = "IPv6";
 		}
 	}
+	*/
 
 	freeaddrinfo(res);						//free linked list
 
 	/*
 	** make socket and connect 
 	*/
-	socketfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+	//socketfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
 
-	status = connect(socketfd, p->ai_addr, p->ai_addrlen);
+	//status = connect(socketfd, p->ai_addr, p->ai_addrlen);
+	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
 		fprintf(stderr,"connect\n"); 
 		close(socketfd);
