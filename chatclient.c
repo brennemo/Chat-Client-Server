@@ -97,6 +97,7 @@ int main(int argc, char *argv[]) {
 	*/
 	
 	//send handle to server 
+	charsWritten = send(socketfd, handleB, strlen(handleB), 0);
 	if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
 	
 	while(1) {
