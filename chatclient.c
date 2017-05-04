@@ -36,6 +36,7 @@ int main(int argc, char *argv[]) {
 
 	int socketfd; 
 	
+	char *quitChat = "\\quit\n";
 	int charsWritten, charsRead;
 
 	//check args
@@ -112,12 +113,15 @@ int main(int argc, char *argv[]) {
 		memset(message, 0, MAX_MESSAGE);
 		fflush(stdout);	fflush(stdin);
 		fgets(message, MAX_MESSAGE - 1, stdin);		//account for newline in size
+		
+		//check for quit command 
+		if (strcmp(quitChat, message) == 0) {
+			close(socketfd);
+			return 0;
+		}
 
 		//trim newline 
 		message[strcspn(message, "\n")] = 0;
-
-		//test print 
-		//printf("%s> %s\n", handleB, message);	
 		
 		//send message to server
 		charsWritten = send(socketfd, message, sizeof message, 0);

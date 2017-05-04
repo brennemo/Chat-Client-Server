@@ -34,7 +34,9 @@ if __name__ == "__main__":
 
     conn, addr = s.accept()       
 
-    print 'Connected by', addr
+    #print 'Connected by', addr
+    
+    quit_chat = "\quit"
     
     #get client's handle first 
     client_message = conn.recv(10)
