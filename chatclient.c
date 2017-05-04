@@ -132,6 +132,12 @@ int main(int argc, char *argv[]) {
 		charsRead =  recv(socketfd, reply, sizeof reply, 0);
 		if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
 		
+		//check for quit command 
+		if (strcmp(quitChat, reply) == 0) {
+			close(socketfd);
+			return 0;
+		}
+		
 		//print reply from server 
 		printf("%s> %s\n", handleA, reply);
 	}

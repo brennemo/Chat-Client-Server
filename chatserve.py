@@ -49,12 +49,13 @@ if __name__ == "__main__":
         #receive message from client 
         client_message = conn.recv(500)
         client_message = client_message.strip('\x00')
-        print handle_b + '> ' + client_message + ' ' + str(len(client_message))
         
         #check for quit command 
         if client_message == "\quit":
             print "quitting"
             break
+        
+        print handle_b + '> ' + client_message
         
         #send message to client
         sys.stdout.write(handle_a + '> ')
@@ -62,6 +63,11 @@ if __name__ == "__main__":
         sent = conn.send(server_message)
         if sent == 0:
             raise RuntimeError("socket connection broken")
+            
+        #check for quit command 
+        if server_message == "\quit":
+            print "quitting"
+            break
 
     conn.close()
     
