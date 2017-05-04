@@ -97,10 +97,12 @@ int main(int argc, char *argv[]) {
 	*/
 	
 	//send handle to server 
-	charsWritten = send(socketfd, handleB, strlen(handleB), 0);
-	if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
+	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
 	
 	//get handle from server 
+	charsRead = recv(socketfd, handleB, sizeof handleA, 0);
+	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };
 	
 	while(1) {
 		//get message from user 
@@ -115,13 +117,13 @@ int main(int argc, char *argv[]) {
 		//printf("%s> %s\n", handleB, message);	
 		
 		//send message to server
-		charsWritten = send(socketfd, message, strlen(message), 0);
-		if (charsWritten < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+		charsWritten = send(socketfd, message, sizeof message, 0);
+		if (charsWritten < 0) { fprintf(stderr,"error: send message\n"); exit(1); };
 		
 		//get reply from server 
 		memset(reply, 0, MAX_MESSAGE);
-		charsRead =  recv(socketfd, reply, sizeof mreply, 0));
-		if (charsRead < 0) { fprintf(stderr,"error: send\n"); exit(1); };
+		charsRead =  recv(socketfd, reply, sizeof reply, 0);
+		if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
 		
 	}
 

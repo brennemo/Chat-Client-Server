@@ -39,20 +39,20 @@ if __name__ == "__main__":
     #get client's handle first 
     client_message = conn.recv(10)
     handle_b =     client_message
-	
-	#send handle to client 
-	sent = self.sock.send(handle_a)
-            if sent == 0:
-                raise RuntimeError("socket connection broken")
+    
+    #send handle to client 
+    sent = conn.send(handle_a)
+    if sent == 0:
+        raise RuntimeError("socket connection broken")
 
     while 1:            
         client_message = conn.recv(500)
         print handle_b + '> ' + client_message
         
         server_message = raw_input()
-		sent = self.sock.send(server_message)
-            if sent == 0:
-                raise RuntimeError("socket connection broken")
+        sent = conn.send(server_message)
+        if sent == 0:
+            raise RuntimeError("socket connection broken")
 
     conn.close()
     
