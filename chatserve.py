@@ -20,7 +20,6 @@ if __name__ == "__main__":
         exit(1)
 
     port_num = int(sys.argv[1])
-    #print port_num 
 
     #hard code server's handle
     handle_a = "blorps"
@@ -33,8 +32,6 @@ if __name__ == "__main__":
     s.listen(1)
 
     conn, addr = s.accept()       
-
-    #print 'Connected by', addr
     
     #get client's handle first 
     client_message = conn.recv(10)

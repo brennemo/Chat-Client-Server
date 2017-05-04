@@ -20,7 +20,7 @@
 **
 ** 
 */
-void initiateContact(int socketfd, struct addrinfo &res, int status) {
+void initiateContact(int socketfd, struct addrinfo *res, int status) {
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
 		fprintf(stderr,"error: connect\n"); 
@@ -28,6 +28,29 @@ void initiateContact(int socketfd, struct addrinfo &res, int status) {
 		exit(1); 
 	}
 }
+
+/*
+**
+** 
+*/
+/*
+void exchangeHandles(string **handleA, string **handleB) {
+	memset(handleB, 0, MAX_HANDLE);
+	printf("Enter handle: ");
+	fflush(stdout);	fflush(stdin);
+	fgets(handleB, MAX_HANDLE, stdin);
+	handleB[strcspn(handleB, "\n")] = 0;		//trim newline 	
+	
+	//send handle to server 
+	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
+	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
+	
+	//get handle from server 
+	memset(handleA, 0, MAX_HANDLE);
+	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
+	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };	
+}
+*/
 
 /*
 **
@@ -69,16 +92,13 @@ int main(int argc, char *argv[]) {
 	printf("hostname: %s, port: %s\n", hostname, port);
 
 	/*
-	** fill out hints struct 
+	** fill out hints struct and prepare to connect 
 	*/
-
 	memset(&hints, 0, sizeof hints);
-	//hints.ai_family = AF_UNSPEC; 			//IPv4 or IPv6
 	hints.ai_family = AF_INET; 	
 	hints.ai_socktype = SOCK_STREAM;		//TCP
 	hints.ai_flags = AI_PASSIVE; 
-
-	//get ready to connect 
+ 
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
@@ -89,34 +109,17 @@ int main(int argc, char *argv[]) {
 	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
 
-	
-	initiateContact(int socketfd, struct addrinfo &res, int status);
-	/*
-	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
-	if (status == -1) {
-		fprintf(stderr,"error: connect\n"); 
-		close(socketfd);
-		exit(1); 
-	}
-	*/
+	initiateContact(socketfd, res, status);
 
 
 	/*
-	** get handle from user 
+	** exchange handles  
 	*/
 	memset(handleB, 0, MAX_HANDLE);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
 	fgets(handleB, MAX_HANDLE, stdin);
-
-	//ERROR HANDLING HERE 
-
-	//trim newline 
-	handleB[strcspn(handleB, "\n")] = 0;
-
-	/*
-	** run chat 
-	*/
+	handleB[strcspn(handleB, "\n")] = 0;		//trim newline 	
 	
 	//send handle to server 
 	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
@@ -126,8 +129,10 @@ int main(int argc, char *argv[]) {
 	memset(handleA, 0, MAX_HANDLE);
 	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };
-	//printf("%s\n", handleA);
 	
+	/*
+	** run chat 
+	*/
 	while(1) { 
 		//get message from user 
 		printf("%s> ", handleB);						//prompt 
