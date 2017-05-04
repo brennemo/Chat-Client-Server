@@ -48,7 +48,8 @@ if __name__ == "__main__":
     while 1:            
         #receive message from client 
         client_message = conn.recv(500)
-        print handle_b + '> ' + client_message
+        client_message = client_message.strip('\x00')
+        print handle_b + '> ' + client_message + ' ' + str(len(client_message))
         
         #check for quit command 
         if client_message == "\quit":
