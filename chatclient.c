@@ -33,8 +33,10 @@ void initiateContact(int socketfd, struct addrinfo *res, int status) {
 **
 ** 
 */
-/*
-void exchangeHandles(string **handleA, string **handleB) {
+
+void exchangeHandles(int socketfd, char *handleA, char *handleB) {
+	int charsWritten, charsRead;
+	
 	memset(handleB, 0, MAX_HANDLE);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
@@ -50,7 +52,7 @@ void exchangeHandles(string **handleA, string **handleB) {
 	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };	
 }
-*/
+
 
 /*
 **
@@ -115,6 +117,7 @@ int main(int argc, char *argv[]) {
 	/*
 	** exchange handles  
 	*/
+	/*
 	memset(handleB, 0, MAX_HANDLE);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
@@ -129,6 +132,8 @@ int main(int argc, char *argv[]) {
 	memset(handleA, 0, MAX_HANDLE);
 	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };
+	*/
+	exchangeHandles(socketfd, handleA, handleB);
 	
 	/*
 	** run chat 
