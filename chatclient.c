@@ -1,17 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
-//#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h> 
 #include <netinet/in.h>
-//#include <arpa/inet.h>
-
-//#include <unistd.h>
-//#include <signal.h>
-//#include <fcntl.h>
-
 
 #define MAX_MESSAGE 500
 #define MAX_HANDLE 10 
@@ -37,11 +29,12 @@ void initiateContact(int socketfd, struct addrinfo *res, int status) {
 void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 	int charsWritten, charsRead;
 	
+	//get handle from user 
 	memset(handleB, 0, MAX_HANDLE);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
 	fgets(handleB, MAX_HANDLE, stdin);
-	handleB[strcspn(handleB, "\n")] = 0;		//trim newline 	
+	handleB[strcspn(handleB, "\n")] = 0;			//trim newline 	
 	
 	//send handle to server 
 	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
@@ -58,15 +51,55 @@ void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 **
 ** 
 */
-void sendMessage() {
+int sendMessage(int socketfd, char *message, char *handleB) {
+	int charsWritten;
+	char *quitChat = "\\quit";
+	
+	//get message from user 
+	printf("%s> ", handleB);						//prompt 
+	memset(message, 0, MAX_MESSAGE);
+	fflush(stdout);	fflush(stdin);
+	fgets(message, MAX_MESSAGE - 1, stdin);			//account for newline in size
 
+	//trim newline 
+	message[strcspn(message, "\n")] = 0;
+	
+	//send message to server
+	charsWritten = send(socketfd, message, sizeof message, 0);
+	if (charsWritten < 0) { fprintf(stderr,"error: send message\n"); exit(1); };
+	
+	//check for quit command 
+	if (strcmp(quitChat, message) == 0) {
+		//printf("quitting\n");
+		//close(socketfd);
+		return 1;
+	}
+	return 0;
 }
 
 /*
 **
 ** 
 */
-void receiveMessage() {
+int receiveMessage(int socketfd, char *reply, char *handleA) {
+	int charsRead;
+	char *quitChat = "\\quit";
+	
+	//get reply from server 
+	memset(reply, 0, MAX_MESSAGE);
+	charsRead =  recv(socketfd, reply, sizeof reply, 0);
+	if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
+	
+	//check for quit command 
+	if (strcmp(quitChat, reply) == 0) {
+		//printf("quitting\n");
+		//close(socketfd);
+		return 1;
+	}
+	
+	//print reply from server 
+	printf("%s> %s\n", handleA, reply);
+	return 0;
 
 }
 
@@ -83,8 +116,8 @@ int main(int argc, char *argv[]) {
 
 	int socketfd; 
 	
-	char *quitChat = "\\quit";
-	int charsWritten, charsRead;
+	//char *quitChat = "\\quit";
+	//int charsWritten, charsRead;
 
 	//check args
 	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
@@ -117,28 +150,24 @@ int main(int argc, char *argv[]) {
 	/*
 	** exchange handles  
 	*/
-	/*
-	memset(handleB, 0, MAX_HANDLE);
-	printf("Enter handle: ");
-	fflush(stdout);	fflush(stdin);
-	fgets(handleB, MAX_HANDLE, stdin);
-	handleB[strcspn(handleB, "\n")] = 0;		//trim newline 	
-	
-	//send handle to server 
-	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
-	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
-	
-	//get handle from server 
-	memset(handleA, 0, MAX_HANDLE);
-	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
-	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };
-	*/
 	exchangeHandles(socketfd, handleA, handleB);
 	
 	/*
 	** run chat 
 	*/
 	while(1) { 
+		if (sendMessage(socketfd, message, handleB) == 1) {
+			printf("quitting\n");
+			close(socketfd);
+			return 0;
+		};
+		if (receiveMessage(socketfd, reply, handleA) == 1) {
+			printf("quitting\n");
+			close(socketfd);	
+			return 0;
+		}
+		
+		/*
 		//get message from user 
 		printf("%s> ", handleB);						//prompt 
 		memset(message, 0, MAX_MESSAGE);
@@ -158,7 +187,9 @@ int main(int argc, char *argv[]) {
 			close(socketfd);
 			return 0;
 		}
+		*/
 		
+		/*
 		//get reply from server 
 		memset(reply, 0, MAX_MESSAGE);
 		charsRead =  recv(socketfd, reply, sizeof reply, 0);
@@ -173,6 +204,7 @@ int main(int argc, char *argv[]) {
 		
 		//print reply from server 
 		printf("%s> %s\n", handleA, reply);
+		*/
 	}
 
 	
