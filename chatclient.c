@@ -2,22 +2,27 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <sys/types.h>
+//#include <sys/types.h>
 #include <sys/socket.h>
 #include <netdb.h> 
 #include <netinet/in.h>
-#include <arpa/inet.h>
+//#include <arpa/inet.h>
 
-#include <unistd.h>
-#include <signal.h>
-#include <fcntl.h>
+//#include <unistd.h>
+//#include <signal.h>
+//#include <fcntl.h>
 
 
 #define MAX_MESSAGE 500
 #define MAX_HANDLE 10 
 
-void initiateContact() {
-
+void initiateContact(int socketfd, struct addrinfo &res, int status) {
+	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
+	if (status == -1) {
+		fprintf(stderr,"error: connect\n"); 
+		close(socketfd);
+		exit(1); 
+	}
 }
 
 void sendMessage() {
@@ -28,6 +33,7 @@ void receiveMessage() {
 
 }
 
+//gcc -o chatclient chatclient.c 
 //chatclient flip1.engr.oregonstate.edu
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
@@ -72,12 +78,16 @@ int main(int argc, char *argv[]) {
 	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
 
+	
+	initiateContact(int socketfd, struct addrinfo &res, int status);
+	/*
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
 		fprintf(stderr,"error: connect\n"); 
 		close(socketfd);
 		exit(1); 
 	}
+	*/
 
 
 	/*
@@ -123,6 +133,7 @@ int main(int argc, char *argv[]) {
 		
 		//check for quit command 
 		if (strcmp(quitChat, message) == 0) {
+			printf("quitting\n");
 			close(socketfd);
 			return 0;
 		}
@@ -134,6 +145,7 @@ int main(int argc, char *argv[]) {
 		
 		//check for quit command 
 		if (strcmp(quitChat, reply) == 0) {
+			printf("quitting\n");
 			close(socketfd);
 			return 0;
 		}
