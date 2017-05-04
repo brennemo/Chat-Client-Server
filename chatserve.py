@@ -20,7 +20,7 @@ if __name__ == "__main__":
         exit(1)
 
     port_num = int(sys.argv[1])
-    print port_num 
+    #print port_num 
 
     #hard code server's handle
     handle_a = "blorps"
@@ -36,8 +36,6 @@ if __name__ == "__main__":
 
     #print 'Connected by', addr
     
-    quit_chat = "\quit"
-    
     #get client's handle first 
     client_message = conn.recv(10)
     handle_b =     client_message
@@ -51,6 +49,11 @@ if __name__ == "__main__":
         #receive message from client 
         client_message = conn.recv(500)
         print handle_b + '> ' + client_message
+        
+        #check for quit command 
+        if client_message == "\quit":
+            print "quitting"
+            break
         
         #send message to client
         sys.stdout.write(handle_a + '> ')
