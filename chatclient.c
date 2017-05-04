@@ -101,10 +101,12 @@ int main(int argc, char *argv[]) {
 	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
 	
 	//get handle from server 
-	charsRead = recv(socketfd, handleB, sizeof handleA, 0);
+	memset(handleA, 0, MAX_HANDLE);
+	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };
+	printf("%s\n", handleA);
 	
-	while(1) {
+	while(1) 
 		//get message from user 
 		memset(message, 0, MAX_MESSAGE);
 		fflush(stdout);	fflush(stdin);
@@ -125,6 +127,8 @@ int main(int argc, char *argv[]) {
 		charsRead =  recv(socketfd, reply, sizeof reply, 0);
 		if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
 		
+		//print reply from server 
+		printf("%s> %s\n", handleA, reply);
 	}
 
 	
