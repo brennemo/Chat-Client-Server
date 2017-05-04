@@ -16,6 +16,10 @@
 #define MAX_MESSAGE 500
 #define MAX_HANDLE 10 
 
+/*
+**
+** 
+*/
 void initiateContact(int socketfd, struct addrinfo &res, int status) {
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
@@ -25,10 +29,18 @@ void initiateContact(int socketfd, struct addrinfo &res, int status) {
 	}
 }
 
+/*
+**
+** 
+*/
 void sendMessage() {
 
 }
 
+/*
+**
+** 
+*/
 void receiveMessage() {
 
 }
@@ -39,6 +51,10 @@ int main(int argc, char *argv[]) {
 	char *hostname, *port;
 	char handleA[MAX_HANDLE], handleB[MAX_HANDLE]; 
 	char message[MAX_MESSAGE], reply[MAX_MESSAGE];
+
+	struct addrinfo hints, *res;
+	int status; 
+	char ipstr[INET_ADDRSTRLEN];
 
 	int socketfd; 
 	
@@ -55,9 +71,6 @@ int main(int argc, char *argv[]) {
 	/*
 	** fill out hints struct 
 	*/
-	struct addrinfo hints, *res;
-	int status; 
-	char ipstr[INET6_ADDRSTRLEN];
 
 	memset(&hints, 0, sizeof hints);
 	//hints.ai_family = AF_UNSPEC; 			//IPv4 or IPv6
@@ -69,8 +82,6 @@ int main(int argc, char *argv[]) {
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
-
-	//freeaddrinfo(res);						//free linked list
 
 	/*
 	** make socket and connect 
@@ -155,6 +166,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	
+	//freeaddrinfo(res);						//free linked list
 	close(socketfd);
 
 	return 0;
