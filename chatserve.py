@@ -46,9 +46,12 @@ if __name__ == "__main__":
         raise RuntimeError("socket connection broken")
 
     while 1:            
+        #receive message from client 
         client_message = conn.recv(500)
         print handle_b + '> ' + client_message
         
+        #send message to client
+        sys.stdout.write(handle_a + '> ')
         server_message = raw_input()
         sent = conn.send(server_message)
         if sent == 0:

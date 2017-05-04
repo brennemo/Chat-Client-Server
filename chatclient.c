@@ -108,6 +108,7 @@ int main(int argc, char *argv[]) {
 	
 	while(1) { 
 		//get message from user 
+		printf("%s> ", handleB);						//prompt 
 		memset(message, 0, MAX_MESSAGE);
 		fflush(stdout);	fflush(stdin);
 		fgets(message, MAX_MESSAGE - 1, stdin);		//account for newline in size
