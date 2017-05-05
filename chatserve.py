@@ -34,7 +34,7 @@ if __name__ == "__main__":
     conn, addr = s.accept()       
     
     #get client's handle first 
-    client_message = conn.recv(10)
+    client_message = conn.recv(12)
     handle_b =     client_message
     
     #send handle to client 

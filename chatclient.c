@@ -8,18 +8,6 @@
 #define MAX_MESSAGE 500
 #define MAX_HANDLE 10 
 
-
-void fillAddrInfo(struct addrinfo *hints, struct addrinfo *res, char *hostname, char *port, int status) {
-	memset(&hints, 0, sizeof hints);
-	hints->ai_family = AF_INET; 	
-	hints->ai_socktype = SOCK_STREAM;		//TCP
-	hints->ai_flags = AI_PASSIVE; 
- 
-	if ((status = getaddrinfo(hostname, port, hints, &res)) != 0) {
-		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
-	}
-}
-
 /*
 **
 ** Establish connection with server 
@@ -41,10 +29,10 @@ void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 	int charsWritten, charsRead;
 	
 	//get handle from user 
-	memset(handleB, 0, MAX_HANDLE);
+	memset(handleB, 0, sizeof handleB);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
-	fgets(handleB, MAX_HANDLE, stdin);
+	fgets(handleB, MAX_HANDLE + 2, stdin);
 	handleB[strcspn(handleB, "\n")] = 0;			//trim newline 	
 	
 	//send handle to server 
@@ -68,7 +56,7 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 	
 	//get message from user 
 	printf("%s> ", handleB);						//prompt 
-	memset(message, 0, MAX_MESSAGE);
+	memset(message, 0, sizeof message);
 	fflush(stdout);	fflush(stdin);
 	fgets(message, MAX_MESSAGE - 1, stdin);			//account for newline in size
 
@@ -95,7 +83,7 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 	char *quitChat = "\\quit";
 	
 	//get reply from server 
-	memset(reply, 0, MAX_MESSAGE);
+	memset(reply, 0, sizeof reply);
 	charsRead =  recv(socketfd, reply, sizeof reply, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
 	
@@ -112,10 +100,17 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 
 //gcc -o chatclient chatclient.c 
 //chatclient flip1.engr.oregonstate.edu
+
+/*
+test max size handle: abcdefghij
+
+test max size message: 
+*/
+
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
-	char handleA[MAX_HANDLE], handleB[MAX_HANDLE]; 
-	char message[MAX_MESSAGE], reply[MAX_MESSAGE];
+	char handleA[MAX_HANDLE+2], handleB[MAX_HANDLE+2]; 
+	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+2];
 
 	struct addrinfo hints, *res;
 	int status = 0; 
@@ -136,8 +131,6 @@ int main(int argc, char *argv[]) {
 	/*
 	** fill out hints struct and prepare to connect 
 	*/
-	fillAddrInfo(&hints, res, hostname, port, status);
-	/*
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_INET; 	
 	hints.ai_socktype = SOCK_STREAM;		//TCP
@@ -146,7 +139,7 @@ int main(int argc, char *argv[]) {
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
-	*/
+	
 
 	/*
 	** make socket and connection 
