@@ -15,9 +15,12 @@
 #define MAX_HANDLE 10 
 
 /*
+** Function: 	initiateContact
 **
-** Establish connection with server 
-** Returns socket file descriptor 
+** Description: fills out hints struct, prepares to connect, 
+**				makes socket, and connects to server 
+** Parameters: 	hostname: server's host name, port: server's port, status: 
+** Returns: 	socket file descriptor 
 */
 int initiateContact(char *hostname, char *port, int status) {
 	struct addrinfo hints, *res;
@@ -54,15 +57,18 @@ int initiateContact(char *hostname, char *port, int status) {
 }
 
 /*
-**
-** Retrieve and store handles for both client and server users 
+** Function: 	exchangeHandles
+** 
+** Description: retrieves and stores handles for both client and server users 
+** Parameters:  socketfd: , handleA: buffer to hold client user's handle, 
+**				handleB: buffer to hold server user's handle 
 */
 void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 	int charsWritten, charsRead;
 	
 	//get handle from user 
-	memset(handleB, 0, MAX_HANDLE + 2);
-	printf("Enter handle: ");
+	printf("Enter handle: ");						//prompt 
+	memset(handleB, 0, MAX_HANDLE + 2);				//prepare buffer, stdin, stdout 
 	fflush(stdout);	fflush(stdin);
 	fgets(handleB, MAX_HANDLE + 2, stdin);
 	handleB[strcspn(handleB, "\n")] = 0;			//trim newline 	
@@ -79,8 +85,14 @@ void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 
 
 /*
+** Function: 	sendMessage
 ** 
-** Returns 1 to quit chat, 0 to continue 
+** Description: displays prompt, gets message from user, sends to server, and 
+** 				quits program if user has entered quit command 
+** Parameters: socketfd: socket file descriptor, message: buffer to hold user input
+				handleB: handle of client/hostB's user 
+** Returns:		1 to quit chat, 
+				0 to continue 
 */
 int sendMessage(int socketfd, char *message, char *handleB) {
 	int charsWritten;
@@ -88,7 +100,7 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 	
 	//get message from user 
 	printf("%s> ", handleB);						//prompt 
-	memset(message, 0, MAX_MESSAGE + 2);			//prepare string, stdin, stdout 
+	memset(message, 0, MAX_MESSAGE + 2);			//prepare buffer, stdin, stdout 
 	fflush(stdout);	fflush(stdin);
 	
 	fgets(message, MAX_MESSAGE + 2, stdin);			//account for newline in size
@@ -106,8 +118,14 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 }
 
 /*
-**
-** Returns 1 to quit chat, 0 to continue 
+** Function: 	receiveMessage
+** 
+** Description:	receives message from server, quits program if quit command is received, 
+**				or prints message to console in as: "handleA> reply"
+** Parameters: 	socketfd: socket file descriptor, reply: buffer to hold server response 
+				handleA: handle of server/host A's user 
+** Returns:		1 to quit chat, 
+				0 to continue 
 */
 int receiveMessage(int socketfd, char *reply, char *handleA) {
 	int charsRead;
@@ -138,14 +156,15 @@ int main(int argc, char *argv[]) {
 	int status = 0; 
 	int socketfd; 
 
-	//check args
+	/*
+	** check args for correct usage 
+	*/
 	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
 	hostname = argv[1];
 	port = argv[2];
 
 	/*
-	** fill out hints struct, prepare to connect,
-	**, make socket, and connect
+	** establish connection with server 
 	*/
 	socketfd = initiateContact(hostname, port, status);
 

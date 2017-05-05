@@ -8,8 +8,10 @@ import signal
 import socket
 import sys
     
-#returns socket file descriptor 
 def start_up(argv):
+	"""
+	Returns: socket file descriptor 
+	"""
     HOST = ''               
     PORT = int(argv[1])         
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,9 +20,11 @@ def start_up(argv):
     s.listen(1)                #allow 1 connection at a time 
     return s 
 
-    
-#Returns 1 to quit chat, 0 to continue 
+     
 def send_message(conn):
+	"""
+	Returns: 1 to quit chat, 0 to continue
+	"""
     server_message = ''
     sys.stdout.write(handle_a + '> ')
     server_message = raw_input()
@@ -35,8 +39,10 @@ def send_message(conn):
     return 0 
 
 
-#Returns 1 to quit chat, 0 to continue 
 def receive_message(conn):
+	"""
+	Returns: 1 to quit chat, 0 to continue
+	"""
     client_message = ''
     client_message = conn.recv(501)
     
@@ -48,8 +54,11 @@ def receive_message(conn):
     print handle_b + '> ' + client_message
     return 0 
 
-#sigint handler for closing server program cleanly 
+
 def sigint_handler(signal, frame):
+	"""
+	sigint handler for closing server program cleanly 
+	"""
     print "\nexiting chatserve"
     sys.exit(0)
 
