@@ -10,8 +10,10 @@ import sys
 def start_up(argv):
     print "start up!"
     HOST = ''               
+    PORT = int(argv[1])         
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
+    s.bind((HOST, PORT))
     s.listen(1)                #allow 1 connection at a time 
     return s 
 
