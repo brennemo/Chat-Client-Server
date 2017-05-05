@@ -29,14 +29,14 @@ void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 	int charsWritten, charsRead;
 	
 	//get handle from user 
-	memset(handleB, 0, MAX_HANDLE + 1);
+	memset(handleB, 0, MAX_HANDLE + 2);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
-	fgets(handleB, MAX_HANDLE + 1, stdin);
+	fgets(handleB, MAX_HANDLE + 2, stdin);
 	handleB[strcspn(handleB, "\n")] = 0;			//trim newline 	
 	
 	//send handle to server 
-	charsWritten = send(socketfd, handleB, MAX_HANDLE + 1, 0);
+	charsWritten = send(socketfd, handleB, strlen(handleB), 0);
 	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
 	
 	//get handle from server 
@@ -56,9 +56,9 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 	
 	//get message from user 
 	printf("%s> ", handleB);							//prompt 
-	memset(message, 0, MAX_MESSAGE + 1);
+	memset(message, 0, MAX_MESSAGE + 2);
 	fflush(stdout);	fflush(stdin);
-	fgets(message, MAX_MESSAGE + 1, stdin);			//account for newline in size
+	fgets(message, MAX_MESSAGE + 2, stdin);			//account for newline in size
 
 	//trim newline 
 	message[strcspn(message, "\n")] = 0;
@@ -110,8 +110,8 @@ test max size message: ncSJldGwNHKmfqgxbUxTFTivQSYjrJtABXhTnlnZEBipNxQxRTFAZgrIF
 
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
-	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+1]; 
-	char message[MAX_MESSAGE+1], reply[MAX_MESSAGE+1];
+	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+2]; 
+	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+1];
 
 	struct addrinfo hints, *res;
 	int status = 0; 

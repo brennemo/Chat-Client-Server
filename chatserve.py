@@ -24,12 +24,12 @@ if __name__ == "__main__":
     #hard code server's handle
     handle_a = "blorps"
 
-    HOST = ''               # Symbolic name meaning all available interfaces
+    HOST = ''               
     PORT = port_num            
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     s.bind((HOST, PORT))
-    s.listen(1)
+    s.listen(1)                #allow 1 connection at a time 
 
     conn, addr = s.accept()       
     
@@ -44,17 +44,20 @@ if __name__ == "__main__":
 
     while 1:            
         #receive message from client 
+        client_message = ''
         client_message = conn.recv(501)
-        client_message = client_message.strip('\x00')
+        #client_message = client_message.strip('\x00')
         
         #check for quit command 
-        if client_message == "\quit":
+        test_quit = client_message.strip('\x00')
+        if test_quit == "\quit":
             print "quitting"
             break
         
         print handle_b + '> ' + client_message
         
         #send message to client
+        server_message = ''
         sys.stdout.write(handle_a + '> ')
         server_message = raw_input()
         sent = conn.send(server_message)
