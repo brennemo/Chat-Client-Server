@@ -44,6 +44,9 @@ int initiateContact(char *hostname, char *port, int status) {
 		exit(1); 
 	}
 	
+		
+	//freeaddrinfo(res);						//free linked list
+	
 	return socketfd;
 	
 }
@@ -178,8 +181,6 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	
-	//freeaddrinfo(res);						//free linked list
 	close(socketfd);
 
 	return 0;
