@@ -132,19 +132,12 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 //python chatserve.py 
 //chatclient flip1.engr.oregonstate.edu
 
-/*
-test max size handle: abcdefghij
-
-test max size message: ncSJldGwNHKmfqgxbUxTFTivQSYjrJtABXhTnlnZEBipNxQxRTFAZgrIFaiZlbOnVxHTsRvbCHvBOMTlTWWPqctbPiOQxCXSaJUCpYSBQFyILxxdENazbxXjxBakkEMxuGLiSkTluzVvUGSXdnIDqRPagxFWyiJzffsiBwbHTkmQZgDYZHzbmtpSAmxphUsaSoiEFHqxnRgxAEkEGbLIQtuEvDLiJmgGJNPCzmMdpqNIIuldLgKVwmhwctATMhmHIJZTXgUfJmjtOiqJGuVNJCSomQIUUoCLeOYmFJXRBdxZTLnbmhilVUWXjmyljwzMkYHKBMbhwHiuVjLlgvlyzjQCPJmQhmnTUbISqWAgjgnsxilMmRGswnxAkDThzpuUpPwGthomwtVJGXjipxrUxBucabZJnSQJPBsCDLyWjvrEySQLhRrDgLSitcMHYpZGSzSeXpHigUmMJTolPhfmHfuamfBYUJnyXRYTXCgqSYuRACRCokFb
-*/
-
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
 	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+2]; 
 	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+1];
 
 	int status = 0; 
-
 	int socketfd; 
 
 	//check args

@@ -7,6 +7,7 @@
 import socket
 import sys
 
+#returns socket descriptor 
 def start_up(argv):
     print "start up!"
     HOST = ''               
@@ -56,40 +57,34 @@ if __name__ == "__main__":
         print "USAGE: ./chatserve <port #>"
         exit(1)
 
-    #port_num = int(sys.argv[1])
-
     #hard code server's handle
     handle_a = "blorps"
 
-    #HOST = ''               
-    #PORT = port_num            
-    #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #set up socket, bind, and start listening 
     s = start_up(sys.argv)
 
-    #s.bind((HOST, PORT))
-    #s.listen(1)                #allow 1 connection at a time 
-
-    #outer while 1 loop starts here for consecutive connections 
-    conn, addr = s.accept()       
-    
-    #get client's handle first 
-    client_message = conn.recv(11)
-    handle_b =     client_message
-    
-    #send handle to client 
-    sent = conn.send(handle_a)
-    if sent == 0:
-        raise RuntimeError("socket connection broken")
-
-    #chat 
-    while 1:    
-        #receive message from client 
-        if receive_message(conn) == 1: 
-            break
+    #accept consecutive connections
+    while 1: 
+        conn, addr = s.accept()       
         
-        #send message to client
-        if send_message(conn) == 1:
-            break 
+        #get client's handle first 
+        client_message = conn.recv(11)
+        handle_b =     client_message
+        
+        #send handle to client 
+        sent = conn.send(handle_a)
+        if sent == 0:
+            raise RuntimeError("socket connection broken")
 
-    conn.close()
+        #chat 
+        while 1:    
+            #receive message from client 
+            if receive_message(conn) == 1: 
+                break
+            
+            #send message to client
+            if send_message(conn) == 1:
+                break 
+
+        conn.close()
     
