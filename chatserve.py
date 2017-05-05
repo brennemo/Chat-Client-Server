@@ -84,12 +84,12 @@ if __name__ == "__main__":
         while 1:    
             #receive message from client 
             if receive_message(conn) == 1: 
-				print "ending chat"
+                print "ending chat"
                 break
             
             #send message to client
             if send_message(conn) == 1:
-				print "ending chat"
+                print "ending chat"
                 break 
 
         conn.close()
