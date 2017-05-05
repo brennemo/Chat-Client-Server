@@ -7,15 +7,14 @@
 import socket
 import sys
 
-def start_up(port_num):
+def start_up(argv):
     print "start up!"
     HOST = ''               
-    PORT = port_num            
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     
+    s.listen(1)                #allow 1 connection at a time 
     return s 
-    #s.bind((HOST, PORT))
-    #s.listen(1)                #allow 1 connection at a time 
+
     
 #Returns 1 to quit chat, 0 to continue 
 def send_message(conn):
@@ -55,18 +54,18 @@ if __name__ == "__main__":
         print "USAGE: ./chatserve <port #>"
         exit(1)
 
-    port_num = int(sys.argv[1])
+    #port_num = int(sys.argv[1])
 
     #hard code server's handle
     handle_a = "blorps"
 
-    HOST = ''               
-    PORT = port_num            
+    #HOST = ''               
+    #PORT = port_num            
     #s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s = start_up(port_num)
+    s = start_up(sys.argv)
 
-    s.bind((HOST, PORT))
-    s.listen(1)                #allow 1 connection at a time 
+    #s.bind((HOST, PORT))
+    #s.listen(1)                #allow 1 connection at a time 
 
     #outer while 1 loop starts here for consecutive connections 
     conn, addr = s.accept()       
