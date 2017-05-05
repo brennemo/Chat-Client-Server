@@ -17,6 +17,7 @@
 /*
 **
 ** Establish connection with server 
+** Returns socket file descriptor 
 */
 int initiateContact(char *hostname, char *port, int status) {
 	struct addrinfo hints, *res;
@@ -29,23 +30,22 @@ int initiateContact(char *hostname, char *port, int status) {
 	hints.ai_socktype = SOCK_STREAM;		//TCP
 	hints.ai_flags = AI_PASSIVE; 
 	
-	//
+	//fill addrinfo struct 
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
 	
-	//
+	//create socket 
 	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
 	if (socketfd == -1) { fprintf(stderr,"error: socket\n"); exit(1); }
 	
-	//
+	//establish connection 
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
 		fprintf(stderr,"error: connect\n"); 
 		close(socketfd);
 		exit(1); 
 	}
-	
 		
 	freeaddrinfo(res);						//free linked list
 	
@@ -129,9 +129,6 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 
 }
 
-//gcc -o chatclient chatclient.c 
-//python chatserve.py 
-//chatclient flip1.engr.oregonstate.edu
 
 int main(int argc, char *argv[]) {
 	char *hostname, *port;

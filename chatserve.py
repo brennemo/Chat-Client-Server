@@ -8,7 +8,7 @@ import signal
 import socket
 import sys
     
-#returns socket descriptor 
+#returns socket file descriptor 
 def start_up(argv):
     HOST = ''               
     PORT = int(argv[1])         
@@ -69,6 +69,7 @@ if __name__ == "__main__":
 
     #accept consecutive connections
     while 1: 
+        print "waiting for client connection on " + sys.argv[1]
         conn, addr = s.accept()       
         
         #get client's handle first 
