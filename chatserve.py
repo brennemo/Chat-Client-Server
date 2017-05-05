@@ -34,7 +34,7 @@ if __name__ == "__main__":
     conn, addr = s.accept()       
     
     #get client's handle first 
-    client_message = conn.recv(12)
+    client_message = conn.recv(11)
     handle_b =     client_message
     
     #send handle to client 
@@ -44,7 +44,7 @@ if __name__ == "__main__":
 
     while 1:            
         #receive message from client 
-        client_message = conn.recv(500)
+        client_message = conn.recv(501)
         client_message = client_message.strip('\x00')
         
         #check for quit command 

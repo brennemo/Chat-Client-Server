@@ -29,19 +29,19 @@ void exchangeHandles(int socketfd, char *handleA, char *handleB) {
 	int charsWritten, charsRead;
 	
 	//get handle from user 
-	memset(handleB, 0, sizeof handleB);
+	memset(handleB, 0, MAX_HANDLE + 1);
 	printf("Enter handle: ");
 	fflush(stdout);	fflush(stdin);
-	fgets(handleB, MAX_HANDLE + 2, stdin);
+	fgets(handleB, MAX_HANDLE + 1, stdin);
 	handleB[strcspn(handleB, "\n")] = 0;			//trim newline 	
 	
 	//send handle to server 
-	charsWritten = send(socketfd, handleB, sizeof handleB, 0);
+	charsWritten = send(socketfd, handleB, MAX_HANDLE + 1, 0);
 	if (charsWritten < 0) { fprintf(stderr,"error: send handle\n"); exit(1); };
 	
 	//get handle from server 
-	memset(handleA, 0, MAX_HANDLE);
-	charsRead = recv(socketfd, handleA, sizeof handleA, 0);
+	memset(handleA, 0, MAX_HANDLE + 2);
+	charsRead = recv(socketfd, handleA, MAX_HANDLE + 1, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive handle\n"); exit(1); };	
 }
 
@@ -55,16 +55,16 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 	char *quitChat = "\\quit";
 	
 	//get message from user 
-	printf("%s> ", handleB);						//prompt 
-	memset(message, 0, sizeof message);
+	printf("%s> ", handleB);							//prompt 
+	memset(message, 0, MAX_MESSAGE + 1);
 	fflush(stdout);	fflush(stdin);
-	fgets(message, MAX_MESSAGE - 1, stdin);			//account for newline in size
+	fgets(message, MAX_MESSAGE + 1, stdin);			//account for newline in size
 
 	//trim newline 
 	message[strcspn(message, "\n")] = 0;
 	
 	//send message to server
-	charsWritten = send(socketfd, message, sizeof message, 0);
+	charsWritten = send(socketfd, message, strlen(message), 0);
 	if (charsWritten < 0) { fprintf(stderr,"error: send message\n"); exit(1); };
 	
 	//check for quit command 
@@ -83,8 +83,8 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 	char *quitChat = "\\quit";
 	
 	//get reply from server 
-	memset(reply, 0, sizeof reply);
-	charsRead =  recv(socketfd, reply, sizeof reply, 0);
+	memset(reply, 0, MAX_MESSAGE + 1);
+	charsRead =  recv(socketfd, reply, MAX_MESSAGE + 1, 0);
 	if (charsRead < 0) { fprintf(stderr,"error: receive message\n"); exit(1); };
 	
 	//check for quit command 
@@ -99,18 +99,19 @@ int receiveMessage(int socketfd, char *reply, char *handleA) {
 }
 
 //gcc -o chatclient chatclient.c 
+//python chatserve.py 
 //chatclient flip1.engr.oregonstate.edu
 
 /*
 test max size handle: abcdefghij
 
-test max size message: 
+test max size message: ncSJldGwNHKmfqgxbUxTFTivQSYjrJtABXhTnlnZEBipNxQxRTFAZgrIFaiZlbOnVxHTsRvbCHvBOMTlTWWPqctbPiOQxCXSaJUCpYSBQFyILxxdENazbxXjxBakkEMxuGLiSkTluzVvUGSXdnIDqRPagxFWyiJzffsiBwbHTkmQZgDYZHzbmtpSAmxphUsaSoiEFHqxnRgxAEkEGbLIQtuEvDLiJmgGJNPCzmMdpqNIIuldLgKVwmhwctATMhmHIJZTXgUfJmjtOiqJGuVNJCSomQIUUoCLeOYmFJXRBdxZTLnbmhilVUWXjmyljwzMkYHKBMbhwHiuVjLlgvlyzjQCPJmQhmnTUbISqWAgjgnsxilMmRGswnxAkDThzpuUpPwGthomwtVJGXjipxrUxBucabZJnSQJPBsCDLyWjvrEySQLhRrDgLSitcMHYpZGSzSeXpHigUmMJTolPhfmHfuamfBYUJnyXRYTXCgqSYuRACRCokFb
 */
 
 int main(int argc, char *argv[]) {
 	char *hostname, *port;
-	char handleA[MAX_HANDLE+2], handleB[MAX_HANDLE+2]; 
-	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+2];
+	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+1]; 
+	char message[MAX_MESSAGE+1], reply[MAX_MESSAGE+1];
 
 	struct addrinfo hints, *res;
 	int status = 0; 
@@ -126,7 +127,7 @@ int main(int argc, char *argv[]) {
 	hostname = argv[1];
 	port = argv[2];
 
-	printf("hostname: %s, port: %s\n", hostname, port);
+	//printf("hostname: %s, port: %s\n", hostname, port);
 
 	/*
 	** fill out hints struct and prepare to connect 
