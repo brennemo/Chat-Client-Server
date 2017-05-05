@@ -1,17 +1,34 @@
 #!/usr/bin/python
 
-# Echo server program
+# Morgan Brenner
+# brennemo@oregonstate.edu 
+# CS 372 Program 1 
+
 import socket
 import sys
 
 def start_up():
     print "start up!"
+    
 
 def send_message():
-    print "sent message!"
+    print "send message!"
 
-def receive_message():
-    print "receive message!"
+
+#Returns 1 to quit chat, 0 to continue 
+def receive_message(conn):
+    client_message = ''
+    client_message = conn.recv(501)
+    
+    #check for quit command 
+    test_quit = client_message.strip('\x00')
+    if test_quit == "\quit":
+        print "quitting"
+        return 1 
+        #break
+    
+    print handle_b + '> ' + client_message
+    return 0 
 
 if __name__ == "__main__":
     #Get port number 
@@ -42,11 +59,11 @@ if __name__ == "__main__":
     if sent == 0:
         raise RuntimeError("socket connection broken")
 
-    while 1:            
+    while 1:    
+        """    
         #receive message from client 
         client_message = ''
         client_message = conn.recv(501)
-        #client_message = client_message.strip('\x00')
         
         #check for quit command 
         test_quit = client_message.strip('\x00')
@@ -55,6 +72,9 @@ if __name__ == "__main__":
             break
         
         print handle_b + '> ' + client_message
+        """
+        if receive_message(conn) == 1: 
+            break
         
         #send message to client
         server_message = ''

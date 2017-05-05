@@ -1,3 +1,9 @@
+/*
+** Morgan Brenner
+** brennemo@oregonstate.edu 
+** CS 372 Program 1 
+*/
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -14,7 +20,6 @@
 */
 int initiateContact(char *hostname, char *port, int status) {
 	struct addrinfo hints, *res;
-	//int status = 0; 
 	char ipstr[INET_ADDRSTRLEN];
 	
 	int socketfd; 
@@ -135,43 +140,19 @@ int main(int argc, char *argv[]) {
 	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+2]; 
 	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+1];
 
-	//struct addrinfo hints, *res;
 	int status = 0; 
-	//char ipstr[INET_ADDRSTRLEN];
 
 	int socketfd; 
-	
-	//char *quitChat = "\\quit";
-	//int charsWritten, charsRead;
 
 	//check args
 	if (argc < 3) { fprintf(stderr,"USAGE: ./chatclient <server-hostname> <port #>\n"); exit(1); } 
 	hostname = argv[1];
 	port = argv[2];
 
-	//printf("hostname: %s, port: %s\n", hostname, port);
-
 	/*
-	** fill out hints struct and prepare to connect 
+	** fill out hints struct, prepare to connect,
+	**, make socket, and connect
 	*/
-	/*
-	memset(&hints, 0, sizeof hints);
-	hints.ai_family = AF_INET; 	
-	hints.ai_socktype = SOCK_STREAM;		//TCP
-	hints.ai_flags = AI_PASSIVE; 
- 
-	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
-		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
-	}
-	*/
-	
-
-	/*
-	** make socket and connection 
-	*/
-	//socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	//if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
-
 	socketfd = initiateContact(hostname, port, status);
 
 
