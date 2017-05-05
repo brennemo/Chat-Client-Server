@@ -10,9 +10,21 @@ import sys
 def start_up():
     print "start up!"
     
-
-def send_message():
-    print "send message!"
+#Returns 1 to quit chat, 0 to continue 
+def send_message(conn):
+    server_message = ''
+    sys.stdout.write(handle_a + '> ')
+    server_message = raw_input()
+    sent = conn.send(server_message)
+    if sent == 0:
+        raise RuntimeError("socket connection broken")
+        
+    #check for quit command 
+    if server_message == "\quit":
+        print "quitting"
+        return 1
+        
+    return 0 
 
 
 #Returns 1 to quit chat, 0 to continue 
@@ -76,6 +88,7 @@ if __name__ == "__main__":
         if receive_message(conn) == 1: 
             break
         
+        """
         #send message to client
         server_message = ''
         sys.stdout.write(handle_a + '> ')
@@ -88,6 +101,10 @@ if __name__ == "__main__":
         if server_message == "\quit":
             print "quitting"
             break
+        """
+        
+        if send_message(conn) == 1:
+            break 
 
     conn.close()
     
