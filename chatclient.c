@@ -85,13 +85,12 @@ int sendMessage(int socketfd, char *message, char *handleB) {
 	char *quitChat = "\\quit";
 	
 	//get message from user 
-	printf("%s> ", handleB);							//prompt 
-	memset(message, 0, MAX_MESSAGE + 2);
+	printf("%s> ", handleB);						//prompt 
+	memset(message, 0, MAX_MESSAGE + 2);			//prepare string, stdin, stdout 
 	fflush(stdout);	fflush(stdin);
+	
 	fgets(message, MAX_MESSAGE + 2, stdin);			//account for newline in size
-
-	//trim newline 
-	message[strcspn(message, "\n")] = 0;
+	message[strcspn(message, "\n")] = 0;			//trim newline 
 	
 	//send message to server
 	charsWritten = send(socketfd, message, strlen(message), 0);
@@ -162,13 +161,13 @@ int main(int argc, char *argv[]) {
 	*/
 	while(1) { 
 		if (sendMessage(socketfd, message, handleB) == 1) {
-			printf("quitting\n");
+			printf("ending chat and exiting\n");
 			close(socketfd);
 			return 0;
 		};
 		
 		if (receiveMessage(socketfd, reply, handleA) == 1) {
-			printf("quitting\n");
+			printf("ending chat and exiting\n");
 			close(socketfd);	
 			return 0;
 		}
