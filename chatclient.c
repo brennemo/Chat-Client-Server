@@ -12,13 +12,35 @@
 **
 ** Establish connection with server 
 */
-void initiateContact(int socketfd, struct addrinfo *res, int status) {
+int initiateContact(char *hostname, char *port, int status) {
+	struct addrinfo hints, *res;
+	//int status = 0; 
+	char ipstr[INET_ADDRSTRLEN];
+	
+	int socketfd; 
+	
+	memset(&hints, 0, sizeof hints);
+	hints.ai_family = AF_INET; 	
+	hints.ai_socktype = SOCK_STREAM;		//TCP
+	hints.ai_flags = AI_PASSIVE; 
+	
+	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
+		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
+	}
+	
+	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	if (socketfd == -1) { fprintf(stderr,"error: socket\n"); exit(1); }
+
+	
 	status = connect(socketfd, res->ai_addr, res->ai_addrlen);
 	if (status == -1) {
 		fprintf(stderr,"error: connect\n"); 
 		close(socketfd);
 		exit(1); 
 	}
+	
+	return socketfd;
+	
 }
 
 /*
@@ -113,9 +135,9 @@ int main(int argc, char *argv[]) {
 	char handleA[MAX_HANDLE+1], handleB[MAX_HANDLE+2]; 
 	char message[MAX_MESSAGE+2], reply[MAX_MESSAGE+1];
 
-	struct addrinfo hints, *res;
+	//struct addrinfo hints, *res;
 	int status = 0; 
-	char ipstr[INET_ADDRSTRLEN];
+	//char ipstr[INET_ADDRSTRLEN];
 
 	int socketfd; 
 	
@@ -132,6 +154,7 @@ int main(int argc, char *argv[]) {
 	/*
 	** fill out hints struct and prepare to connect 
 	*/
+	/*
 	memset(&hints, 0, sizeof hints);
 	hints.ai_family = AF_INET; 	
 	hints.ai_socktype = SOCK_STREAM;		//TCP
@@ -140,15 +163,16 @@ int main(int argc, char *argv[]) {
 	if ((status = getaddrinfo(hostname, port, &hints, &res)) != 0) {
 		fprintf(stderr,"error: getaddrinfo: %s\n", gai_strerror(status)); exit(1); 	
 	}
+	*/
 	
 
 	/*
 	** make socket and connection 
 	*/
-	socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-	if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
+	//socketfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
+	//if (socketfd == -1) { fprintf(stderr,"socket\n"); exit(1); }
 
-	initiateContact(socketfd, res, status);
+	socketfd = initiateContact(hostname, port, status);
 
 
 	/*
